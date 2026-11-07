@@ -82,8 +82,12 @@ skills/
 └── update-docs/
     ├── SKILL.md
     └── references/doc-templates.md   # 首次生成 docs/ai-context 的骨架
+scripts/validate-skills.py            # frontmatter / 资源校验
+.github/workflows/validate.yml        # CI：每次 push 与 PR 都跑一遍
 install.sh
 ```
+
+校验脚本值得单独说一句：DSH 对 frontmatter 非法的技能是**静默丢弃**的——名字写成 `Prime Skill`、把 `user-invocable` 写成下划线、引用了不存在的 `references/` 文件，症状都一样：技能就是不出现，不报错。所以本地和 CI 都会跑 `python3 scripts/validate-skills.py`，把这些错误挡在推送之前。
 
 ## 致谢与许可
 
