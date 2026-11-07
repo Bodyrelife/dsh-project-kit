@@ -1,0 +1,44 @@
+{
+  "name": "dsh-project-kit",
+  "version": "0.1.0",
+  "description": "Project-context skills for DeepSeek Harness: /prime loads docs/ai-context, /update-docs keeps it in sync.",
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml"
+  },
+  "files": [
+    "lib",
+    "skills",
+    "cordis.patch.yml"
+  ],
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "dsh-bundle",
+    "skills",
+    "prime",
+    "documentation",
+    "ai-context"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bodyrelife/dsh-project-kit.git"
+  },
+  "homepage": "https://github.com/Bodyrelife/dsh-project-kit",
+  "bugs": {
+    "url": "https://github.com/Bodyrelife/dsh-project-kit/issues"
+  },
+  "dsh": {
+    "engines": {
+      "dsh": ">=0.2.2-rc.1 <0.3.0"
+    },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

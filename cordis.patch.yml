@@ -1,0 +1,6 @@
+# dsh-project-kit bundle patch: inserts only this plugin into a profile's
+# layer stack. The skills themselves live in ../skills and are registered by
+# lib/index.js through the harness `skills` registry.
+- insert:
+    - id: dsh-project-kit
+      name: 'dsh-project-kit'

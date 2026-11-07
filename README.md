@@ -17,13 +17,22 @@
 
 ## 安装
 
+先克隆：
+
 ```bash
 git clone https://github.com/Bodyrelife/dsh-project-kit.git
 cd dsh-project-kit
+```
+
+然后两种方式选一种。**不要同时用**——两者并存时文件系统里的副本优先级更高，插件会被静默遮蔽。
+
+### 方式一：技能目录（默认，推荐日常使用）
+
+```bash
 ./install.sh
 ```
 
-默认用软链接装到 `~/.dsh/skills/`（用户级，所有项目可用），`git pull` 后即刻生效。
+软链接到 `~/.dsh/skills/`（用户级，所有项目可用），`git pull` 后即刻生效，无需重启。
 
 | 选项 | 作用 |
 |---|---|
@@ -33,7 +42,26 @@ cd dsh-project-kit
 | `--uninstall` | 移除这两个技能 |
 | `--help` | 用法 |
 
-也可以手动把 `skills/` 下的两个目录复制到 `~/.dsh/skills/`。DSH 会热监听该目录，新技能无需重启。
+### 方式二：作为插件（bundle）安装
+
+本仓库同时是一个合法的 DSH bundle：`package.json` 声明 `dsh.bundle.patch`，`cordis.patch.yml` 插入插件行，`lib/index.js` 在加载时把 `skills/` 里的技能注册进 harness 的技能注册表。
+
+在 DSH 里打开 **Plugins → Add plugin → Install a third-party plugin**，填入本仓库的绝对路径（或 `git+https://github.com/Bodyrelife/dsh-project-kit.git`），安装后启用。
+
+```text
+/Users/<you>/dsh-project-kit
+```
+
+装完出现在插件列表里，可以随时开关。区别：
+
+| | 技能目录 | 插件 |
+|---|---|---|
+| 生效时机 | 改文件即时生效，热监听 | 加载时读取正文，改了要重启 |
+| 可靠性 | 只依赖文件存在 | 依赖 profile 里指向仓库的链接，仓库挪走会失效 |
+| 管理 | 一个 `install.sh` | 插件列表里可开关、可卸载 |
+| 适合 | 日常自己用 | 想统一管理插件、或分发给别人 |
+
+注意：插件安装后 `~/.dsh/skills/` 里若有同名副本，文件系统那份会赢，插件等于没生效。切换前先 `./install.sh --uninstall`。
 
 ## 用法
 
@@ -84,7 +112,10 @@ skills/
 └── update-docs/
     ├── SKILL.md
     └── references/doc-templates.md   # 首次生成 docs/ai-context 的骨架
-scripts/validate-skills.py            # frontmatter / 资源校验
+lib/index.js                          # 插件形态：把 skills/ 注册进技能注册表
+cordis.patch.yml                      # 插件形态：插入 bundle 的 patch 行
+package.json                          # dsh.bundle.patch + dsh.engines.dsh
+scripts/validate-skills.py            # frontmatter / 资源 / bundle 声明校验
 .github/workflows/validate.yml        # CI：每次 push 与 PR 都跑一遍
 install.sh
 ```

@@ -9,6 +9,7 @@ required fields, and referenced resources.
 
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -96,6 +97,32 @@ def check_skill(skill_dir: Path, errors: list[str]) -> None:
             fail(errors, where, f"body references {ref!r} but the file does not exist")
 
 
+def check_bundle_declaration(errors: list[str]) -> None:
+    """Keep the optional bundle mode honest: a declared patch and entry must exist."""
+    manifest = ROOT / "package.json"
+    if not manifest.is_file():
+        fail(errors, "package.json", "missing (the bundle mode needs it)")
+        return
+
+    try:
+        data = json.loads(manifest.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        fail(errors, "package.json", f"invalid JSON: {error}")
+        return
+
+    patch = data.get("dsh", {}).get("bundle", {}).get("patch")
+    if patch is None:
+        fail(errors, "package.json", "missing dsh.bundle.patch")
+    elif not (ROOT / patch).is_file():
+        fail(errors, "package.json", f"dsh.bundle.patch points at {patch!r}, which does not exist")
+
+    entry = data.get("main")
+    if entry is None:
+        fail(errors, "package.json", "missing main (the plugin entry)")
+    elif not (ROOT / entry).is_file():
+        fail(errors, "package.json", f"main points at {entry!r}, which does not exist")
+
+
 def main() -> int:
     if not SKILLS_DIR.is_dir():
         print(f"error: no skills/ directory at {SKILLS_DIR}", file=sys.stderr)
@@ -109,6 +136,7 @@ def main() -> int:
 
     for skill_dir in skill_dirs:
         check_skill(skill_dir, errors)
+    check_bundle_declaration(errors)
 
     if errors:
         for error in errors:
