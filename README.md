@@ -1,5 +1,7 @@
 # dsh-project-kit
 
+[![validate](https://github.com/Bodyrelife/dsh-project-kit/actions/workflows/validate.yml/badge.svg)](https://github.com/Bodyrelife/dsh-project-kit/actions/workflows/validate.yml)
+
 把 [Claude-Code-Development-Kit](https://github.com/peterkrueck/Claude-Code-Development-Kit) 的 `/prime` 与 `/update-docs` 工作流移植为 **DeepSeek Harness** 技能。
 
 在 DSH 里，`/` 菜单本身就是技能入口：输入 `/prime`，host 会找到同名技能并把指令正文注入给模型。所以原有的肌肉记忆不需要改变——参数也保留，`/prime --full`、`/prime api 加限流` 照常工作。
@@ -16,7 +18,7 @@
 ## 安装
 
 ```bash
-git clone https://github.com/<you>/dsh-project-kit.git
+git clone https://github.com/Bodyrelife/dsh-project-kit.git
 cd dsh-project-kit
 ./install.sh
 ```
